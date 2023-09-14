@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 raylib = "3.7.0"
+winit = "0.25.0"
+async-std = { version = "1.9", features = ["attributes"] }

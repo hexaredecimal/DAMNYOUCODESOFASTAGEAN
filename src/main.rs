@@ -1,6 +1,36 @@
 
 
 use raylib::prelude::*;
+use async_std::{
+    channel::{self, Receiver, Sender},
+    task,
+};
+use winit::{
+    event::{
+        ButtonId, DeviceEvent, ElementState, Event, KeyboardInput, MouseScrollDelta, WindowEvent, VirtualKeyCode },
+    event_loop::{ControlFlow, EventLoop},
+    window::Window,
+ };
+
+pub(crate) enum HandledEvent {
+    Keyboard(KeyboardInput),
+    MouseButton {
+        button: ButtonId,
+        state: ElementState,
+    },
+    MouseScroll(MouseScrollDelta),
+}
+
+impl HandledEvent {
+    fn variant(&self) -> &'static str {
+        match self {
+            HandledEvent::Keyboard(_) => "Keyboard",
+            HandledEvent::MouseButton { .. } => "MouseButton",
+            HandledEvent::MouseScroll(_) => "MouseScroll",
+        }
+    }
+}
+
 
 fn main() {
     let width = 200;
@@ -40,148 +70,178 @@ fn main() {
     let mut display = String::from("["); 
     let mut text_x = width / 2;
 
-
+    let event_loop = EventLoop::new(); 
+    let window = Window::new(&event_loop)
+        .expect("Could not create x11 window"); 
+    window.set_visible(false); 
+    
+    let (tx, rx) = channel::unbounded(); 
     while !rl.window_should_close() {
         let mut message = String::from("");  
-        if let Some(key) = rl.get_key_pressed() {
-            use raylib::consts::KeyboardKey;  
-            match key {
-                KeyboardKey::KEY_A => {
-                    index = 1; 
-                    message.push_str("a"); 
-                } 
-                KeyboardKey::KEY_B => {
-                    index = 2; 
-                    message.push_str("b"); 
-                } 
-                KeyboardKey::KEY_C => {
-                    index = 3; 
-                    message.push_str("c"); 
-                } 
-                KeyboardKey::KEY_D => {
-                    index = 4;  
-                    message.push_str("d"); 
-                }
-                KeyboardKey::KEY_E => {
-                    index = 5; 
-                    message.push_str("e"); 
-                }
-                KeyboardKey::KEY_F => {
-                    index = 6;  
-                    message.push_str("f"); 
-                } 
-                KeyboardKey::KEY_G => {
-                    index = 7;  
-                    message.push_str("g"); 
-                } 
-                KeyboardKey::KEY_H => {
-                    index = 8; 
-                    message.push_str("h"); 
-                } 
-                KeyboardKey::KEY_I => {
-                    index = 9;
-                    message.push_str("i"); 
-                } 
-                KeyboardKey::KEY_J => {
-                    index = 10; 
-                    message.push_str("j"); 
-                }
-                KeyboardKey::KEY_K => {
-                    index = 11; 
-                    message.push_str("k"); 
-                }
-                KeyboardKey::KEY_L => {
-                    index = 12; 
-                    message.push_str("l"); 
-                } 
-                KeyboardKey::KEY_M => {
-                    index = 13; 
-                    message.push_str("m"); 
-                } 
-                KeyboardKey::KEY_N => {
-                    index = 14; 
-                    message.push_str("n"); 
-                }
-                KeyboardKey::KEY_O => {
-                    index = 14; 
-                    message.push_str("o"); 
-                } 
-                KeyboardKey::KEY_P => {
-                    index = 2; 
-                    message.push_str("p"); 
-                }
-                KeyboardKey::KEY_Q => {
-                    index = 3; 
-                    message.push_str("q"); 
-                }
-                KeyboardKey::KEY_R => {
-                    index = 4;  
-                    message.push_str("r"); 
-                } 
-                KeyboardKey::KEY_S => {
-                    index = 5;
-                    message.push_str("s"); 
-                }
-                KeyboardKey::KEY_T => {
-                    index = 6;  
-                    message.push_str("t"); 
-                }
-                KeyboardKey::KEY_U => {
-                    index = 7; 
-                    message.push_str("u"); 
-                } 
-                KeyboardKey::KEY_V => {
-                    index = 8;
-                    message.push_str("v"); 
-                } 
-                KeyboardKey::KEY_W => {
-                    index = 9; 
-                    message.push_str("w"); 
-                }
-                KeyboardKey::KEY_X => {
-                    index = 10; 
-                    message.push_str("x"); 
-                }
-                KeyboardKey::KEY_Y => {
-                    index = 11; 
-                    message.push_str("y"); 
-                }
-                KeyboardKey::KEY_Z => {
-                    index = 12;  
-                    message.push_str("z"); 
-                } 
-                KeyboardKey::KEY_SPACE => {
-                    index = 13; 
-                    message.push_str("[_]"); 
-                }
+        event_loop.run(move |event, _, control_flow| {
+            *control_flow = ControlFlow::Wait;
+            let tx = tx.clone();
+            match event {
+                Event::DeviceEvent { event: DeviceEvent::Key(key), .. } => {
+                    let current_key = key.clone();
+                    task::spawn(async move { tx.send(HandledEvent::Keyboard(key)).await }); 
+                    if current_key.state == ElementState::Pressed {
+                        return (); 
+                    }
+                    let code  = current_key.virtual_keycode.unwrap_or(VirtualKeyCode::Space); 
 
-               _ => {}
-            } 
-        }
-        
-        /* if message.size() > 10 {
-            display.push_str(message); 
-        } */
+                    // println!("found code: {:?} -> {:?}", code, key); 
+                    let key = format!("{:?}", code);
+                    
+                    match key.as_str() {
+                        "A" => {
+                            index = 14; 
+                            message.push_str("a"); 
+                        } 
+                        "B" => {
+                            index = 2; 
+                            message.push_str("b"); 
+                        } 
+                        "C" => {
+                            index = 3; 
+                            message.push_str("c"); 
+                        } 
+                        "D" => {
+                            index = 4;  
+                            message.push_str("d"); 
+                        }
+                        "E" => {
+                            index = 5; 
+                            message.push_str("e"); 
+                        }
+                        "F" => {
+                            index = 6;  
+                            message.push_str("f"); 
+                        } 
+                        "G" => {
+                            index = 7;  
+                            message.push_str("g"); 
+                        } 
+                        "H" => {
+                            index = 8; 
+                            message.push_str("h"); 
+                        } 
+                        "I" => {
+                            index = 9;
+                            message.push_str("i"); 
+                        } 
+                        "J" => {
+                            index = 10; 
+                            message.push_str("j"); 
+                        }
+                        "K" => {
+                            index = 11; 
+                            message.push_str("k"); 
+                        }
+                        "L" => {
+                            index = 12; 
+                            message.push_str("l"); 
+                        } 
+                        "M" => {
+                            index = 13; 
+                            message.push_str("m"); 
+                        } 
+                        "N" => {
+                            index = 14; 
+                            message.push_str("n"); 
+                        }
+                        "O" => {
+                            index = 14; 
+                            message.push_str("o"); 
+                        } 
+                        "P" => {
+                            index = 2; 
+                            message.push_str("p"); 
+                        }
+                        "Q" => {
+                            index = 3; 
+                            message.push_str("q"); 
+                        }
+                        "R" => {
+                            index = 4;  
+                            message.push_str("r"); 
+                        } 
+                        "S" => {
+                            index = 5;
+                            message.push_str("s"); 
+                        }
+                        "T" => {
+                            index = 6;  
+                            message.push_str("t"); 
+                        }
+                        "U" => {
+                            index = 7; 
+                            message.push_str("u"); 
+                        }
+                        "V" => {
+                            index = 8;
+                            message.push_str("v"); 
+                        } 
+                        "W" => {
+                            index = 9; 
+                            message.push_str("w"); 
+                        }
+                        "X" => {
+                            index = 10; 
+                            message.push_str("x"); 
+                        }
+                        "Y" => {
+                            index = 11; 
+                            message.push_str("y"); 
+                        }
+                        "Z" => {
+                            index = 12;  
+                            message.push_str("z"); 
+                        } 
+                       "Return" => {
+                            index = 13; 
+                            message.push_str("[e]"); 
+                        }
+                       "Space" => {
+                            index = 14, 
+                            message.push_str("[_]"); 
+                       }
 
-        if index > 0 {
-            index = index - 1
-        }
- 
-        if text_x < 0 {
-            text_x = width / 2;
-            display = "".to_string(); 
-        }
-        
-        if !message.is_empty() {
-            display.push_str(message.as_str()); 
-            text_x -= 5; 
-        }
-       let mut d = rl.begin_drawing(&thread);
-        
-        d.clear_background(Color::BLACK);
-        d.draw_texture_pro(&images[index], src_rect, dest_rect, origin, 0.0, Color::WHITE); 
-        d.draw_text(display.as_str(), text_x , height - 20 , 16, Color::WHITE); 
-        //d.draw_texture(&images[0], 640/ 2, 480/ 2, Color::WHITE); 
+                        _ => {
+                            println!("unhandled key: {}", key);  
+                        }
+                    }
+
+                }
+                Event::WindowEvent {event: WindowEvent::CloseRequested, ..} => {
+                    *control_flow = ControlFlow::Exit; 
+                }
+                _ => {
+                    println!("No event!"); 
+                    message = String::from(""); 
+                }
+            }
+
+            if index > 0 {
+                index = index - 1
+            }
+     
+            if text_x < 0 {
+                text_x = width / 2;
+                display = "".to_string(); 
+            }
+            
+            if !message.is_empty() {
+                display.push_str(message.as_str()); 
+                text_x -= 5; 
+            }
+           let mut d = rl.begin_drawing(&thread);
+            
+            d.clear_background(Color::BLACK);
+            d.draw_texture_pro(&images[index], src_rect, dest_rect, origin, 0.0, Color::WHITE); 
+            d.draw_text(display.as_str(), text_x , height - 20 , 16, Color::WHITE); 
+           
+           });    
     }
 }
 
