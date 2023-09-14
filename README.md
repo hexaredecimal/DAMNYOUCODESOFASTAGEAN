@@ -6,14 +6,14 @@ https://github.com/hexaredecimal/DAMNYOUCODESOFASTAGEAN/assets/51314855/d8098210
 
 
 ## building
-'''sh
+```sh
 $ git clone https://github.com/hexaredecimal/DAMNYOUCODESOFASTAGEAN.git
 $ cd DAMNYOUCODESOFASTAGEAN 
 $ cargo build
 $ cargo run
-'''
+```
 
-#dependencies
+## dependencies
 * x11 | wayland => unix-like os
 * raylib => crossplatform
 
