@@ -2,7 +2,7 @@
 
 use raylib::prelude::*;
 use async_std::{
-    channel::{self, Receiver, Sender},
+    channel::{self},
     task,
 };
 use winit::{
@@ -14,21 +14,12 @@ use winit::{
 
 pub(crate) enum HandledEvent {
     Keyboard(KeyboardInput),
-    MouseButton {
+    // Maybe used in the future 
+    /*MouseButton {
         button: ButtonId,
         state: ElementState,
     },
-    MouseScroll(MouseScrollDelta),
-}
-
-impl HandledEvent {
-    fn variant(&self) -> &'static str {
-        match self {
-            HandledEvent::Keyboard(_) => "Keyboard",
-            HandledEvent::MouseButton { .. } => "MouseButton",
-            HandledEvent::MouseScroll(_) => "MouseScroll",
-        }
-    }
+    MouseScroll(MouseScrollDelta),*/ 
 }
 
 
@@ -50,7 +41,6 @@ fn main() {
             expect(format!("Could not load image {}", filename).as_str());
         images.push(texture); 
     }
-
 
     let first = images[0].as_ref();
      
@@ -75,7 +65,7 @@ fn main() {
         .expect("Could not create x11 window"); 
     window.set_visible(false); 
     
-    let (tx, rx) = channel::unbounded(); 
+    let (tx, _) = channel::unbounded(); 
     while !rl.window_should_close() {
         let mut message = String::from("");  
         event_loop.run(move |event, _, control_flow| {
@@ -206,7 +196,90 @@ fn main() {
                             index = 14; 
                             message.push_str("[_]"); 
                        }
-
+                       "Escape" => {
+                            index = 1; 
+                            message.push_str("<esc>"); 
+                       }
+                       "Left" => {
+                            index = 2;
+                            message.push_str("<left>");
+                       }
+                       "Right" => {
+                            index = 3; 
+                            message.push_str("<right>"); 
+                       }
+                       "Up" => {
+                            index = 4;
+                            message.push_str("<Up>"); 
+                       }
+                       "Down" => {
+                            index = 5;
+                            message.push_str("<down>"); 
+                       }
+                       "Semicolon" => {
+                            index = 6;
+                            message.push_str(";");
+                       }
+                       "Period" => {
+                           index = 7; 
+                           message.push_str("."); 
+                       }
+                       "Apostrophe" => {
+                            index = 8; 
+                            message.push_str("'"); 
+                       }
+                       "Tab" => {
+                            index = 9; 
+                            message.push_str("[TAB]"); 
+                       }
+                       "LBracket" => {
+                            index = 10; 
+                            message.push_str("["); 
+                       }
+                       "RBracket" => {
+                            index = 11;
+                            message.push_str("]");
+                       }
+                       "Back" => {
+                            index = 12; 
+                            message.push_str("[BACK]"); 
+                       }
+                       "Key1" => {
+                            index = 13; 
+                            message.push_str("1"); 
+                       }
+                       "key2" => {
+                            index = 14; 
+                            message.push_str("2"); 
+                       }
+                       "Key3" => {
+                            index = 1;
+                            message.push_str("3"); 
+                       }
+                       "Key4" => {
+                            index = 2; 
+                            message.push_str("4"); 
+                       }
+                       "Key5" => {
+                            index = 3; 
+                            message.push_str("5"); 
+                       }
+                       "Key6" => {
+                            index = 4; 
+                            message.push_str("6"); 
+                       }
+                       "Key7" => {
+                            index = 5; 
+                            message.push_str("7"); 
+                       }
+                       "key8" => {
+                            index = 6;
+                            message.push_str("8"); 
+                       }
+                       "Key9" => {
+                            index = 7;
+                            message.push_str("9"); 
+                       }
                         _ => {
                             println!("unhandled key: {}", key);  
                         }
@@ -215,6 +288,7 @@ fn main() {
                 }
                 Event::WindowEvent {event: WindowEvent::CloseRequested, ..} => {
                     *control_flow = ControlFlow::Exit; 
+                    println!("Exit pressed"); 
                 }
                 _ => {
                     message = String::from(""); 
