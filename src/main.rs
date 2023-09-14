@@ -203,7 +203,7 @@ fn main() {
                             message.push_str("[e]"); 
                         }
                        "Space" => {
-                            index = 14, 
+                            index = 14; 
                             message.push_str("[_]"); 
                        }
 
@@ -217,7 +217,6 @@ fn main() {
                     *control_flow = ControlFlow::Exit; 
                 }
                 _ => {
-                    println!("No event!"); 
                     message = String::from(""); 
                 }
             }
