@@ -69,7 +69,7 @@ fn main() {
     while !rl.window_should_close() {
         let mut message = String::from("");  
         event_loop.run(move |event, _, control_flow| {
-            *control_flow = ControlFlow::Wait;
+            // *control_flow = ControlFlow::Wait;
             let tx = tx.clone();
             match event {
                 Event::DeviceEvent { event: DeviceEvent::Key(key), .. } => {
@@ -79,209 +79,206 @@ fn main() {
                         return (); 
                     }
                     let code  = current_key.virtual_keycode.unwrap_or(VirtualKeyCode::Space); 
-
-                    // println!("found code: {:?} -> {:?}", code, key); 
-                    let key = format!("{:?}", code);
                     
-                    match key.as_str() {
-                        "A" => {
-                            index = 14; 
+                    match code {
+                        VirtualKeyCode::A => {
+                            index = 13; 
                             message.push_str("a"); 
                         } 
-                        "B" => {
-                            index = 2; 
+                        VirtualKeyCode::B => {
+                            index = 1; 
                             message.push_str("b"); 
                         } 
-                        "C" => {
-                            index = 3; 
+                        VirtualKeyCode::C => {
+                            index = 2; 
                             message.push_str("c"); 
                         } 
-                        "D" => {
-                            index = 4;  
+                        VirtualKeyCode::D => {
+                            index = 3;  
                             message.push_str("d"); 
                         }
-                        "E" => {
-                            index = 5; 
+                        VirtualKeyCode::E => {
+                            index = 4; 
                             message.push_str("e"); 
                         }
-                        "F" => {
-                            index = 6;  
+                        VirtualKeyCode::F => {
+                            index = 5;  
                             message.push_str("f"); 
                         } 
-                        "G" => {
-                            index = 7;  
+                        VirtualKeyCode::G => {
+                            index = 6;  
                             message.push_str("g"); 
                         } 
-                        "H" => {
-                            index = 8; 
+                        VirtualKeyCode::H => {
+                            index = 7; 
                             message.push_str("h"); 
                         } 
-                        "I" => {
+                        VirtualKeyCode::I => {
                             index = 9;
                             message.push_str("i"); 
                         } 
-                        "J" => {
-                            index = 10; 
+                        VirtualKeyCode::J => {
+                            index = 8; 
                             message.push_str("j"); 
                         }
-                        "K" => {
-                            index = 11; 
+                        VirtualKeyCode::K => {
+                            index = 9; 
                             message.push_str("k"); 
                         }
-                        "L" => {
-                            index = 12; 
+                        VirtualKeyCode::L => {
+                            index = 10; 
                             message.push_str("l"); 
                         } 
-                        "M" => {
-                            index = 13; 
+                        VirtualKeyCode::M => {
+                            index = 11; 
                             message.push_str("m"); 
                         } 
-                        "N" => {
-                            index = 14; 
+                        VirtualKeyCode::N => {
+                            index = 12; 
                             message.push_str("n"); 
                         }
-                        "O" => {
-                            index = 14; 
+                        VirtualKeyCode::O => {
+                            index = 13; 
                             message.push_str("o"); 
                         } 
-                        "P" => {
-                            index = 2; 
+                        VirtualKeyCode::P => {
+                            index = 1; 
                             message.push_str("p"); 
                         }
-                        "Q" => {
-                            index = 3; 
+                        VirtualKeyCode::Q => {
+                            index = 2; 
                             message.push_str("q"); 
                         }
-                        "R" => {
-                            index = 4;  
+                        VirtualKeyCode::R => {
+                            index = 3;  
                             message.push_str("r"); 
                         } 
-                        "S" => {
-                            index = 5;
+                        VirtualKeyCode::S => {
+                            index = 4;
                             message.push_str("s"); 
                         }
-                        "T" => {
-                            index = 6;  
+                        VirtualKeyCode::T => {
+                            index = 5;  
                             message.push_str("t"); 
                         }
-                        "U" => {
-                            index = 7; 
+                        VirtualKeyCode::U => {
+                            index = 6; 
                             message.push_str("u"); 
                         }
-                        "V" => {
-                            index = 8;
+                        VirtualKeyCode::V => {
+                            index = 7;
                             message.push_str("v"); 
                         } 
-                        "W" => {
-                            index = 9; 
+                        VirtualKeyCode::W => {
+                            index = 8; 
                             message.push_str("w"); 
                         }
-                        "X" => {
-                            index = 10; 
+                        VirtualKeyCode::X => {
+                            index = 9; 
                             message.push_str("x"); 
                         }
-                        "Y" => {
-                            index = 11; 
+                        VirtualKeyCode::Y => {
+                            index = 10; 
                             message.push_str("y"); 
                         }
-                        "Z" => {
-                            index = 12;  
+                        VirtualKeyCode::Z => {
+                            index = 11;  
                             message.push_str("z"); 
                         } 
-                       "Return" => {
-                            index = 13; 
+                       VirtualKeyCode::Return => {
+                            index = 12; 
                             message.push_str("[e]"); 
                         }
-                       "Space" => {
-                            index = 14; 
+                       VirtualKeyCode::Space => {
+                            index = 13; 
                             message.push_str("[_]"); 
                        }
-                       "Escape" => {
-                            index = 1; 
+                       VirtualKeyCode::Escape => {
+                            index = 0; 
                             message.push_str("<esc>"); 
                        }
-                       "Left" => {
-                            index = 2;
+                       VirtualKeyCode::Left => {
+                            index = 1;
                             message.push_str("<left>");
                        }
-                       "Right" => {
-                            index = 3; 
+                       VirtualKeyCode::Right => {
+                            index = 2; 
                             message.push_str("<right>"); 
                        }
-                       "Up" => {
-                            index = 4;
+                       VirtualKeyCode::Up => {
+                            index = 3;
                             message.push_str("<Up>"); 
                        }
-                       "Down" => {
-                            index = 5;
+                       VirtualKeyCode::Down => {
+                            index = 4;
                             message.push_str("<down>"); 
                        }
-                       "Semicolon" => {
-                            index = 6;
+                       VirtualKeyCode::Semicolon => {
+                            index = 5;
                             message.push_str(";");
                        }
-                       "Period" => {
-                           index = 7; 
+                       VirtualKeyCode::Period => {
+                           index = 6; 
                            message.push_str("."); 
                        }
-                       "Apostrophe" => {
-                            index = 8; 
+                       VirtualKeyCode::Apostrophe => {
+                            index = 7; 
                             message.push_str("'"); 
                        }
-                       "Tab" => {
-                            index = 9; 
+                       VirtualKeyCode::Tab => {
+                            index = 8; 
                             message.push_str("[TAB]"); 
                        }
-                       "LBracket" => {
-                            index = 10; 
+                       VirtualKeyCode::LBracket => {
+                            index = 9; 
                             message.push_str("["); 
                        }
-                       "RBracket" => {
-                            index = 11;
+                       VirtualKeyCode::RBracket => {
+                            index = 10;
                             message.push_str("]");
                        }
-                       "Back" => {
-                            index = 12; 
+                       VirtualKeyCode::Back => {
+                            index = 11; 
                             message.push_str("[BACK]"); 
                        }
-                       "Key1" => {
-                            index = 13; 
+                       VirtualKeyCode::Key1 => {
+                            index = 12; 
                             message.push_str("1"); 
                        }
-                       "key2" => {
-                            index = 14; 
+                       VirtualKeyCode::Key2 => {
+                            index = 13; 
                             message.push_str("2"); 
                        }
-                       "Key3" => {
-                            index = 1;
+                       VirtualKeyCode::Key3 => {
+                            index = 0;
                             message.push_str("3"); 
                        }
-                       "Key4" => {
-                            index = 2; 
+                       VirtualKeyCode::Key4 => {
+                            index = 1; 
                             message.push_str("4"); 
                        }
-                       "Key5" => {
-                            index = 3; 
+                       VirtualKeyCode::Key5 => {
+                            index = 2; 
                             message.push_str("5"); 
                        }
-                       "Key6" => {
-                            index = 4; 
+                       VirtualKeyCode::Key6 => {
+                            index = 3; 
                             message.push_str("6"); 
                        }
-                       "Key7" => {
-                            index = 5; 
+                       VirtualKeyCode::Key7 => {
+                            index = 4; 
                             message.push_str("7"); 
                        }
-                       "key8" => {
-                            index = 6;
+                       VirtualKeyCode::Key8 => {
+                            index = 5;
                             message.push_str("8"); 
                        }
-                       "Key9" => {
-                            index = 7;
+                       VirtualKeyCode::Key9 => {
+                            index = 6;
                             message.push_str("9"); 
                        }
                         _ => {
-                            println!("unhandled key: {}", key);  
+                            println!("unhandled key: {:?}", code);  
                         }
                     }
 
@@ -295,9 +292,9 @@ fn main() {
                 }
             }
 
-            if index > 0 {
+            /*if index > 0 {
                 index = index - 1
-            }
+            } */
      
             if text_x < 0 {
                 text_x = width / 2;
