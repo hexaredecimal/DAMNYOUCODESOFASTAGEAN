@@ -34,11 +34,18 @@ fn main() {
     let mut images = vec![]; 
     for index in 1..=14 {
         let mut filename = String::from("images/frame"); 
+        let mut asserts_path = String::from("/usr/local/");
         filename.push_str(index.to_string().as_str()); 
         filename.push_str(".png"); 
+        asserts_path.push_str(filename.as_str()); 
+
         let texture = rl
-            .load_texture(&thread, filename.as_str()).
-            expect(format!("Could not load image {}", filename).as_str());
+            .load_texture(&thread, filename.as_str())
+            .unwrap_or(
+                rl.load_texture(&thread, asserts_path.as_str())
+                .expect("Error: Fatal error loading images")
+            ); 
+            //expect(format!("Could not load image {}", filename).as_str());
         images.push(texture); 
     }
 
@@ -65,21 +72,20 @@ fn main() {
         .expect("Could not create x11 window"); 
     window.set_visible(false); 
     
-    let (tx, _) = channel::unbounded(); 
+    // let (tx, _) = channel::unbounded(); 
     while !rl.window_should_close() {
         let mut message = String::from("");  
         event_loop.run(move |event, _, control_flow| {
             // *control_flow = ControlFlow::Wait;
-            let tx = tx.clone();
+            // let tx = tx.clone();
             match event {
                 Event::DeviceEvent { event: DeviceEvent::Key(key), .. } => {
                     let current_key = key.clone();
-                    task::spawn(async move { tx.send(HandledEvent::Keyboard(key)).await }); 
                     if current_key.state == ElementState::Pressed {
                         return (); 
                     }
                     let code  = current_key.virtual_keycode.unwrap_or(VirtualKeyCode::Space); 
-                    
+                    // task::spawn(async move { tx.send(HandledEvent::Keyboard(key)).await }); 
                     match code {
                         VirtualKeyCode::A => {
                             index = 13; 
@@ -276,6 +282,14 @@ fn main() {
                        VirtualKeyCode::Key9 => {
                             index = 6;
                             message.push_str("9"); 
+                       }
+                       VirtualKeyCode::Key0 => {
+                            index = 7;
+                            message.push_str("0");
+                       }
+                       VirtualKeyCode::Comma => {
+                            index = 8; 
+                            message.push_str(","); 
                        }
                         _ => {
                             println!("unhandled key: {:?}", code);  
