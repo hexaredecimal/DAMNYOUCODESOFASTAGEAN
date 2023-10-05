@@ -12,6 +12,8 @@ use winit::{
     window::Window,
 };
 
+use clap::Parser; 
+
 pub(crate) enum HandledEvent {
     Keyboard(KeyboardInput),
     // Maybe used in the future
@@ -22,7 +24,15 @@ pub(crate) enum HandledEvent {
     MouseScroll(MouseScrollDelta),*/
 }
 
+
+#[derive(Parser, Debug)]
+#[command(author, version, about)]
+struct Args {
+}
+
 fn main() {
+    let _ = Args::parse(); 
+
     let width = 200;
     let height = 200;
     let (mut rl, thread) = raylib::init()
