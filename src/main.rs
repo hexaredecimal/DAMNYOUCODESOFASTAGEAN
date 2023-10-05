@@ -28,7 +28,7 @@ fn main() {
     let height = 200; 
     let (mut rl, thread) = raylib::init()
         .size(width, height)
-        .title("DAMNYOUTYPESOFASTAGEAN")
+        .title("DAMNYCODESOFASTAGEAN")
         .build();
 
     let mut images = vec![]; 
